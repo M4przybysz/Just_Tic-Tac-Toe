@@ -32,24 +32,40 @@ class App {
 
     static SDL_Renderer* renderer;
 
+    int turnCounter = 1;
+    char winner = '.';
+    void resetGame();
+    void drawBoard();
+    void drawXO();
+    int checkWin();
+    int updateBoard(int mouseX, int mouseY);
+
  private:
     bool isRunning_ = false;
     SDL_Window* window_;
-    TTF_Font* font_;
 
     // Gameplay variables
     bool player_ = 1; // 1 = X, 0 = O 
-    int turnCounter_ = 1;
     std::array<std::array<char, 3>, 3> board_ {{{'.', '.', '.'},
                                                {'.', '.', '.'},
                                                {'.', '.', '.'}}};
 
     // Text variables
+    TTF_Font* font_;
+    SDL_Color textColor_ = {255, 255, 255}; // white
+
     std::string playerInfo_;
     std::string turnNum_; 
+    std::string winnerInfo_;
+
     SDL_Surface* playerInfoSurface_;
     SDL_Surface* turnNumSurface_;
-    SDL_Color textColor_ = {255, 255, 255}; // white
+    SDL_Surface* winnerInfoSurface_;
+
     SDL_Texture* playerInfoTexture_;
     SDL_Texture* turnNumTexture_;
+    SDL_Texture* winnerInfoTexture_;
 };
+
+void drawX(SDL_Renderer* renderer, int centerX, int centerY);
+void drawO(SDL_Renderer* renderer, int centreX, int centreY, int radius);
