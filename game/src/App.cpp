@@ -10,10 +10,12 @@ App::App() {
 App::~App() { 
     SDL_FreeSurface(playerInfoSurface_);
     SDL_FreeSurface(turnNumSurface_);
+    SDL_FreeSurface(winnerInfoSurface_ );
     std::clog << "Surfaces freed...\n";
 
     SDL_DestroyTexture(playerInfoTexture_);
     SDL_DestroyTexture(turnNumTexture_);
+    SDL_DestroyTexture(winnerInfoTexture_);
     std::clog << "Textures destroyed...\n";
 
     TTF_CloseFont(font_);
@@ -70,13 +72,13 @@ void App::handleEvents() {
             // >>>Add more events to be handled here<<<
             case SDL_MOUSEBUTTONDOWN:
                 // std::clog << (int)event.button.button << " " << event.button.x << " " << event.button.y << '\n';
-                if((int)event.button.button == 1 && event.button.y >= 40 && winner == '.') { 
+                if((int)event.button.button == 1 && event.button.y >= 40 && winner == '.' && player_ == 1) { 
                     if(updateBoard(event.button.x, event.button.y) == 0) {
                         player_ = !player_;
                         turnCounter++;
                     } 
                 }
-                else if((int)event.button.button == 1) {
+                else if((int)event.button.button == 1 && winner != '.') {
                     resetGame();
                 }
                 break;
@@ -87,7 +89,15 @@ void App::handleEvents() {
     }
 }
 
-void App::update(const double& deltaTime) {}
+void App::update(const double& deltaTime) {
+    if(winner == '.' && player_ == 0 && turnCounter < 10) {
+        updateBot();
+    }
+    if(turnCounter >= 10) {
+        int win = checkWin();
+        winner = (win == 1)? 'X': (win == 0)? 'O' : (win == 2)? 'N' : '.';
+    }
+}
 
 void App::render() {
     SDL_RenderClear(renderer);      // Clear renderer to show new things on screen
@@ -103,7 +113,7 @@ void App::render() {
 
 void App::drawBoard() {
     if(winner == 'X' || winner == 'O' || winner == 'N') {
-        winnerInfo_ = (winner == 'N')? "Tie (Click to restart)" : (winner == 'X')? "Player X won!!!  (Click to restart)" : "Player O won!!!   (Click to restart)";
+        winnerInfo_ = (winner == 'N')? "Tie (Click to restart)" : (winner == 'X')? "Player X won! (Click to restart)" : "Player O won! (Click to restart)";
         winnerInfoSurface_ = TTF_RenderText_Solid(font_, winnerInfo_.c_str(), textColor_);
         winnerInfoTexture_ = SDL_CreateTextureFromSurface(renderer, winnerInfoSurface_);
         SDL_Rect rect = {(600-winnerInfoSurface_->w)/2, (640-winnerInfoSurface_->h)/2, winnerInfoSurface_->w, winnerInfoSurface_->h};
@@ -168,7 +178,7 @@ int App::checkWin() {
     {
         return 0;
     }
-    if(turnCounter >= 9) {
+    if(turnCounter >= 10) {
         return 2;
     }
     
@@ -194,6 +204,21 @@ int App::updateBoard(int mouseX, int mouseY) {
         return 0;
     }
     return -1;
+}
+
+void App::updateBot() {
+    short x, y;
+    do {
+        x = rand() % 4;
+        y = rand() % 4;
+    } while(board_[y][x] != '.');
+
+    board_[y][x] = 'O';
+    player_ = !player_;
+    turnCounter++;
+
+    int win = checkWin();
+    winner = (win == 1)? 'X': (win == 0)? 'O' : (win == 2)? 'N' : '.';
 }
 
 void drawX(SDL_Renderer* renderer, int centerX, int centerY) {

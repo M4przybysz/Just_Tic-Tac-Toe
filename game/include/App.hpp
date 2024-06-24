@@ -39,6 +39,7 @@ class App {
     void drawXO();
     int checkWin();
     int updateBoard(int mouseX, int mouseY);
+    void updateBot();
 
  private:
     bool isRunning_ = false;
