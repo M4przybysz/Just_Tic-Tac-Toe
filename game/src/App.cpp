@@ -206,12 +206,102 @@ int App::updateBoard(int mouseX, int mouseY) {
     return -1;
 }
 
+std::pair<short, short> App::botSearch(char p) {
+    short x = -1, y = -1;
+
+    for(short i = 0; i < 3; i++) {      // board_ y
+        for(short j = 0; j < 3; j++) {  // board_ x
+            if(board_[i][j] == p) {
+                // check column
+                if(i == 0) {
+                    if(board_[i+1][j] == p && board_[i+2][j] == '.') { y = i+2; x = j; break; }
+                    if(board_[i+2][j] == p && board_[i+1][j] == '.') { y = i+1; x = j; break; }
+                }
+                else if(i == 1) {
+                    if(board_[i+1][j] == p && board_[i-1][j] == '.') { y = i-1; x = j; break; }
+                    if(board_[i-1][j] == p && board_[i+1][j] == '.') { y = i+1; x = j; break; }
+                }
+                else if(i == 2) {
+                    if(board_[i-1][j] == p && board_[i-2][j] == '.') { y = i-2; x = j; break; }
+                    if(board_[i-2][j] == p && board_[i-1][j] == '.') { y = i-1; x = j; break; }
+                }
+
+                // check row
+                if(j == 0) {
+                    if(board_[i][j+1] == p && board_[i][j+2] == '.') { y = i; x = j+2; break; }
+                    if(board_[i][j+2] == p && board_[i][j+1] == '.') { y = i; x = j+1; break; }
+                }
+                else if(j == 1) {
+                    if(board_[i][j+1] == p && board_[i][j-1] == '.') { y = i; x = j-1; break; }
+                    if(board_[i][j-1] == p && board_[i][j+1] == '.') { y = i; x = j+1; break; }
+                }
+                else if(j == 2) {
+                    if(board_[i][j-1] == p && board_[i][j-2] == '.') { y = i; x = j-2; break; }
+                    if(board_[i][j-2] == p && board_[i][j-1] == '.') { y = i; x = j-1; break; }
+                }
+
+                // check diagonal
+                if(i == 0 && j == 0) {
+                    if(board_[i+1][j+1] == p && board_[i+2][j+2] == '.') { y = i+2; x = j+2; break; }
+                    if(board_[i+2][j+2] == p && board_[i+1][j+1] == '.') { y = i+1; x = j+1; break; }
+                }
+                else if(i == 1 && j == 1) {
+                    if(board_[i-1][j-1] == p && board_[i+1][j+1] == '.') { y = i+1; x = j+1; break; }
+                    if(board_[i+1][j+1] == p && board_[i-1][j-1] == '.') { y = i-1; x = j-1; break; }
+                    if(board_[i+1][j-1] == p && board_[i-1][j+1] == '.') { y = i-1; x = j+1; break; }
+                    if(board_[i-1][j+1] == p && board_[i+1][j-1] == '.') { y = i+1; x = j-1; break; }
+                }
+                else if(i == 2 && j == 2) {
+                    if(board_[i-1][j-1] == p && board_[i-2][j-2] == '.') { y = i-2; x = j-2; break; }
+                    if(board_[i-2][j-2] == p && board_[i-1][j-1] == '.') { y = i-1; x = j-1; break; }
+                }
+                else if(i == 0 && j == 2) {
+                    if(board_[i+1][j-1] == p && board_[i+2][j-2] == '.') { y = i+2; x = j-2; break; }
+                    if(board_[i+2][j-2] == p && board_[i+1][j-1] == '.') { y = i-1; x = j+1; break; }
+                }
+                else if(i == 2 && j == 0) {
+                    if(board_[i-1][j+1] == p && board_[i-2][j+2] == '.') { y = i-2; x = j+2; break; }
+                    if(board_[i-2][j+2] == p && board_[i-1][j+1] == '.') { y = i+1; x = j-1; break; }
+                }
+            }
+        }
+    }
+
+    return {x, y};
+}
+
 void App::updateBot() {
     short x, y;
-    do {
-        x = rand() % 4;
-        y = rand() % 4;
-    } while(board_[y][x] != '.');
+    std::pair<short, short> botTarget = {-1, -1};
+    bool lock = false;
+
+    // Search for 'O'
+    if(!lock) {
+        botTarget = botSearch('O');
+        if(botTarget.first != -1 && botTarget.second != -1) {
+            x = botTarget.first;
+            y = botTarget.second;
+            lock = true;
+        }
+    }
+
+    // Search for player win in 1 turn
+    if(!lock) {
+        botTarget = botSearch('X');
+        if(botTarget.first != -1 && botTarget.second != -1) {
+            x = botTarget.first;
+            y = botTarget.second;
+            lock = true;
+        }
+    }
+
+    // Choose random
+    if(!lock) {
+        do {
+            x = rand() % 4;
+            y = rand() % 4;
+        } while(board_[y][x] != '.');
+    }
 
     board_[y][x] = 'O';
     player_ = !player_;

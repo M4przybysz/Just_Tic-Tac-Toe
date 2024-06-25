@@ -40,6 +40,7 @@ class App {
     int checkWin();
     int updateBoard(int mouseX, int mouseY);
     void updateBot();
+    std::pair<short, short> botSearch(char p);
 
  private:
     bool isRunning_ = false;
