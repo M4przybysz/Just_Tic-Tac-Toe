@@ -257,11 +257,11 @@ std::pair<short, short> App::botSearch(char p) {
                 }
                 else if(i == 0 && j == 2) {
                     if(board_[i+1][j-1] == p && board_[i+2][j-2] == '.') { y = i+2; x = j-2; break; }
-                    if(board_[i+2][j-2] == p && board_[i+1][j-1] == '.') { y = i-1; x = j+1; break; }
+                    if(board_[i+2][j-2] == p && board_[i+1][j-1] == '.') { y = i+1; x = j-1; break; }
                 }
                 else if(i == 2 && j == 0) {
                     if(board_[i-1][j+1] == p && board_[i-2][j+2] == '.') { y = i-2; x = j+2; break; }
-                    if(board_[i-2][j+2] == p && board_[i-1][j+1] == '.') { y = i+1; x = j-1; break; }
+                    if(board_[i-2][j+2] == p && board_[i-1][j+1] == '.') { y = i-1; x = j+1; break; }
                 }
             }
         }
