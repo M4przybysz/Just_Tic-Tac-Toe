@@ -47,7 +47,7 @@ void App::init(const std::string& title, const int& x, const int& y, const int& 
                 std::clog << "Renderer created...\n";
                 SDL_SetRenderDrawColor(renderer, 50, 0, 100, 0);
                 isRunning_ = true;
-                std::clog << "TTT is running!!!\n";
+                std::clog << "Just Tic-Tac-Toe is running!!!\n";
             }
             else { std::cerr << "Couldn't create a renderer!\n"; }
         }
