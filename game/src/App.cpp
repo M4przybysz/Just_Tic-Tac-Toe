@@ -148,11 +148,11 @@ void App::drawBoard() {
 void App::drawXO() {
     if(winner == '.') {
         for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
-            if(board_[j][i] == 'X') { drawX(renderer, i*200+100, j*200+140); }
-            if(board_[j][i] == 'O') { drawO(renderer, i*200+100, j*200+140, 80); }
+            for(int j = 0; j < 3; j++) {
+                if(board_[j][i] == 'X') { drawX(renderer, i*200+100, j*200+140); }
+                if(board_[j][i] == 'O') { drawO(renderer, i*200+100, j*200+140, 80); }
+            }
         }
-    }
     }
 }
 
